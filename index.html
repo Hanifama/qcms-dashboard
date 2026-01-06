@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>QC Dashboard - Recent Activity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+      <!-- ================= HEADER ================= -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+          Quality Control Dashboard
+        </h1>
+      </div>
+
+      <div class="bg-blue-50 p-2">
+        <!-- DIVIDER -->
+        <div class="border-t mb-4"></div>
+        <div
+          class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+        >
+          <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+          <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+            GET /dashboard
+          </code>
+        </div>
+
+        <!-- ================= SUMMARY ================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <!-- Size Terdaftar -->
+          <div class="bg-gray-50 p-4 rounded-lg border border-blue-100">
+            <p class="text-sm text-gray-500">Size Terdaftar</p>
+            <h2 class="text-2xl font-bold text-blue-600">25</h2>
+            <p class="text-xs text-gray-400 mt-1">
+              Jumlah size yang sudah tersedia
+            </p>
+            <p class="text-xs text-blue-600 mt-1">(key: totalSize)</p>
+          </div>
+
+          <!-- Template Terdaftar -->
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <p class="text-sm text-gray-500">Template Terdaftar</p>
+            <h2 class="text-2xl font-bold text-green-600">18</h2>
+            <p class="text-xs text-gray-400 mt-1">
+              Jumlah template yang sudah terdaftar
+            </p>
+            <p class="text-xs text-blue-600 mt-1">(key: totalTemplate)</p>
+          </div>
+
+          <!-- User Terdaftar -->
+          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+            <p class="text-sm text-gray-500">User Terdaftar</p>
+            <h2 class="text-2xl font-bold text-yellow-600">12</h2>
+            <p class="text-xs text-gray-400 mt-1">Jumlah user yang aktif</p>
+            <p class="text-xs text-blue-600 mt-1">(key: totalUser)</p>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t mb-4"></div>
+      </div>
+
+      <!-- ================= QC ACTIVITY CARD ================= -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <!-- HEADER + FILTER -->
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6"
+        >
+          <div>
+            <h2 class="text-lg font-semibold">Quality Control Activity</h2>
+            <p class="text-sm text-gray-500">
+              Summary & recent inspection data
+            </p>
+          </div>
+
+          <!-- FILTER DATE -->
+          <div class="flex items-center gap-2">
+            <div>
+              <label class="text-xs text-gray-500">Start From</label>
+              <input
+                type="date"
+                class="block border rounded-md px-3 py-1.5 text-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-500">End From</label>
+              <input
+                type="date"
+                class="block border rounded-md px-3 py-1.5 text-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <button
+              class="mt-4 md:mt-5 px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t mb-4"></div>
+        <div
+          class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+        >
+          <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+          <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+            GET /dashboard/summary/recent-qc
+          </code>
+        </div>
+
+        <!-- ================= SUMMARY ================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <!-- Total Pemeriksaan QC -->
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <p class="text-sm text-gray-500">Total Pemeriksaan QC</p>
+            <h2 class="text-2xl font-bold">128</h2>
+            <p class="text-xs text-gray-400 mt-1">
+              Berdasarkan rentang tanggal terpilih
+            </p>
+            <p class="text-xs text-blue-600 mt-1">(key : qcDone)</p>
+          </div>
+
+          <!-- Lulus Pemeriksaan -->
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <p class="text-sm text-gray-500">Lulus Pemeriksaan</p>
+            <h2 class="text-2xl font-bold text-green-600">110</h2>
+            <p class="text-xs text-green-600 mt-1">
+              Sesuai standar toleransi template
+            </p>
+            <p class="text-xs text-blue-600 mt-1">(key : qcPassed)</p>
+          </div>
+
+          <!-- Tidak Lulus -->
+          <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+            <p class="text-sm text-gray-500">Tidak Lulus</p>
+            <h2 class="text-2xl font-bold text-red-600">18</h2>
+            <p class="text-xs text-red-600 mt-1">
+              Di luar batas toleransi template
+            </p>
+            <p class="text-xs text-blue-600 mt-1">(key : qcNotPassed)</p>
+          </div>
+
+          <!-- Passed Template -->
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <p class="text-sm text-gray-500">Persentase Passed</p>
+            <p class="text-xs text-green-600 mt-1">(66.7%)</p>
+            <p class="text-xs text-blue-600 mt-1">(key: percentPassed)</p>
+          </div>
+
+          <!-- Not Passed Template -->
+          <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+            <p class="text-sm text-gray-500">Persentase Not Passed</p>
+            <p class="text-xs text-red-600 mt-1">(33.3%)</p>
+            <p class="text-xs text-blue-600 mt-1">(key: percentNotPassed)</p>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t mb-4"></div>
+
+        <!-- TABLE -->
+        <div
+          class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+        >
+          <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+          <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+            GET /dashboard/recent-qc
+          </code>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-100 text-gray-600">
+              <tr>
+                <th class="p-3 text-center">No</th>
+                <th class="p-3">Batch ID</th>
+                <th class="p-3 text-center">Piece</th>
+                <th class="p-3">Lokasi</th>
+                <th class="p-3">Size</th>
+                <th class="p-3 text-center">Passed</th>
+                <th class="p-3 text-center">Not Passed</th>
+                <th class="p-3 text-center">Pass</th>
+                <th class="p-3 text-center">Status</th>
+                <th class="p-3">Checked By</th>
+                <th class="p-3">Created At</th>
+                <th class="p-3 text-center">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- DATA 1 -->
+              <tr class="border-b bg-red-50">
+                <td class="p-3 text-center">1</td>
+                <td class="p-3 font-medium">15J2507BK</td>
+                <td class="p-3 text-center">p1</td>
+                <td class="p-3">Cutting 2 Pulpit</td>
+                <td class="p-3">HB 100X100X6X8</td>
+                <td class="p-3 text-center">32</td>
+                <td class="p-3 text-center font-semibold text-red-600">7</td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-600"
+                  >
+                    NOT PASSED
+                  </span>
+                </td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700"
+                  >
+                    DONE
+                  </span>
+                </td>
+                <td class="p-3">Andi QC</td>
+                <td class="p-3 text-xs text-gray-500">2026-01-05 20:45</td>
+                <td class="p-3 text-center">
+                  <button
+                    class="px-3 py-1 text-xs rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  >
+                    Preview
+                  </button>
+                </td>
+              </tr>
+
+              <!-- DATA 2 -->
+              <tr class="border-b">
+                <td class="p-3 text-center">2</td>
+                <td class="p-3 font-medium">15J2507BK</td>
+                <td class="p-3 text-center">p2</td>
+                <td class="p-3">Cutting 2 Pulpit</td>
+                <td class="p-3">HB 100X100X6X8</td>
+                <td class="p-3 text-center">39</td>
+                <td class="p-3 text-center">0</td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-600"
+                  >
+                    PASSED
+                  </span>
+                </td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700"
+                  >
+                    DONE
+                  </span>
+                </td>
+                <td class="p-3">Andi QC</td>
+                <td class="p-3 text-xs text-gray-500">2026-01-05 20:48</td>
+                <td class="p-3 text-center">
+                  <button
+                    class="px-3 py-1 text-xs rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  >
+                    Preview
+                  </button>
+                </td>
+              </tr>
+
+              <!-- DATA 3 -->
+              <tr class="border-b bg-red-50">
+                <td class="p-3 text-center">3</td>
+                <td class="p-3 font-medium">15J2507BK</td>
+                <td class="p-3 text-center">p3</td>
+                <td class="p-3">Cutting 2 Pulpit</td>
+                <td class="p-3">HB 100X100X6X8</td>
+                <td class="p-3 text-center">28</td>
+                <td class="p-3 text-center font-semibold text-red-600">6</td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-600"
+                  >
+                    NOT PASSED
+                  </span>
+                </td>
+                <td class="p-3 text-center">
+                  <span
+                    class="px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-700"
+                  >
+                    DONE
+                  </span>
+                </td>
+                <td class="p-3">Budi QC</td>
+                <td class="p-3 text-xs text-gray-500">2026-01-05 21:05</td>
+                <td class="p-3 text-center">
+                  <button
+                    class="px-3 py-1 text-xs rounded bg-blue-100 text-blue-600 hover:bg-blue-200"
+                  >
+                    Preview
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- PAGINATION -->
+          <div
+            class="flex flex-col md:flex-row items-center justify-between gap-4 mt-4"
+          >
+            <!-- INFO DATA -->
+            <p class="text-sm text-gray-500">
+              Menampilkan <span class="font-medium">1–10</span> dari
+              <span class="font-medium">128</span> data
+            </p>
+
+            <!-- BUTTON PAGINATION -->
+            <div class="flex items-center gap-1">
+              <!-- PREVIOUS -->
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                disabled
+              >
+                Sebelumnya
+              </button>
+
+              <!-- PAGE NUMBER -->
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md bg-blue-600 text-white"
+              >
+                1
+              </button>
+
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md hover:bg-gray-100"
+              >
+                2
+              </button>
+
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md hover:bg-gray-100"
+              >
+                3
+              </button>
+
+              <span class="px-2 text-gray-400">...</span>
+
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md hover:bg-gray-100"
+              >
+                13
+              </button>
+
+              <!-- NEXT -->
+              <button
+                class="px-3 py-1.5 text-sm border rounded-md text-gray-700 hover:bg-gray-100"
+              >
+                Berikutnya
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= QC CHARTS (WEEKLY & MONTHLY) ================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- ================= QC WEEKLY CHART ================= -->
+        <div class="bg-white rounded-xl shadow p-6 flex flex-col h-full">
+          <!-- Chart Header -->
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Aktivitas QC Mingguan</h2>
+            <span class="text-sm text-gray-500">7 Hari Terakhir</span>
+          </div>
+
+          <!-- Endpoint Card -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+            <p class="text-gray-500 mb-1 text-sm">Gunakan endpoint berikut:</p>
+            <code
+              class="block bg-gray-100 text-gray-800 p-2 rounded font-mono text-xs"
+            >
+              GET /dashboard/analysis
+            </code>
+          </div>
+
+          <!-- Chart -->
+          <div class="flex-1">
+            <canvas id="qcWeeklyChart" class="h-full w-full"></canvas>
+          </div>
+        </div>
+
+        <!-- ================= QC MONTHLY CHART ================= -->
+        <div class="bg-white rounded-xl shadow p-6 flex flex-col h-full">
+          <!-- Chart Header -->
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Aktivitas QC Bulanan</h2>
+
+            <!-- Filter Bulan -->
+            <div class="flex items-center gap-2">
+              <label for="monthFilter" class="text-sm text-gray-500"
+                >Pilih Bulan:</label
+              >
+              <select id="monthFilter" class="border rounded-lg p-1 text-sm">
+                <option value="all" selected>All</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">Mei</option>
+                <option value="6">Jun</option>
+                <option value="7">Jul</option>
+                <option value="8">Agu</option>
+                <option value="9">Sep</option>
+                <option value="10">Okt</option>
+                <option value="11">Nov</option>
+                <option value="12">Des</option>
+              </select>
+            </div>
+          </div>
+          <!-- Endpoint Card -->
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+            <p class="text-gray-500 mb-1 text-sm">Gunakan endpoint berikut:</p>
+            <code
+              class="block bg-gray-100 text-gray-800 p-2 rounded font-mono text-xs"
+            >
+              GET /dashboard/analysis/monthly
+            </code>
+          </div>
+
+          <!-- Chart -->
+          <div class="flex-1">
+            <canvas id="qcMonthlyChart" class="h-full w-full"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= QC RESULT BY SIZE ================= -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4"
+        >
+          <div>
+            <h2 class="text-lg font-semibold">QC by Size</h2>
+            <p class="text-sm text-gray-500">Passed vs Not Passed</p>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+        >
+          <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+          <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+            GET /dashboard/by-size
+          </code>
+        </div>
+
+        <!-- Filter -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <!-- Size -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">Size</label>
+            <select
+              id="sizeFilter"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            >
+              <option value="">All Size</option>
+            </select>
+          </div>
+
+          <!-- From Date -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">From Date</label>
+            <input
+              type="date"
+              id="fromDate"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            />
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">End Date</label>
+            <input
+              type="date"
+              id="endDate"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            />
+          </div>
+
+          <!-- Button -->
+          <div class="flex items-end">
+            <button
+              id="applyFilter"
+              class="w-full bg-blue-600 text-white rounded-lg p-2 text-sm hover:bg-blue-700"
+            >
+              Apply Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="relative h-[420px]">
+          <canvas id="qcSizePercentChart"></canvas>
+        </div>
+      </div>
+
+      <!-- ================= OPERATOR PERFORMANCE ================= -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4"
+        >
+          <div>
+            <h2 class="text-lg font-semibold">QC Operator Performance</h2>
+            <p class="text-sm text-gray-500">
+              Performance berdasarkan hasil pemeriksaan QC
+            </p>
+          </div>
+
+          <!-- Optional Filter -->
+          <div class="flex gap-2 items-center">
+            <!-- Tanggal Mulai -->
+            <input type="date" class="border rounded-lg px-3 py-2 text-sm" />
+
+            <!-- Tanggal Selesai -->
+            <input type="date" class="border rounded-lg px-3 py-2 text-sm" />
+
+            <!-- Filter Lokasi -->
+            <select class="border rounded-lg px-3 py-2 text-sm">
+              <option value="">Semua Lokasi</option>
+              <option value="lokasi1">Lokasi 1</option>
+              <option value="lokasi2">Lokasi 2</option>
+              <option value="lokasi3">Lokasi 3</option>
+              <option value="lokasi4">Lokasi 4</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+        >
+          <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+          <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+            GET /dashboard/recent-qc-by-user
+          </code>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-100 text-gray-600">
+              <tr>
+                <th class="p-3 text-center">No</th>
+                <th class="p-3">Quality Control By</th>
+                <th class="p-3 text-center">Total Check</th>
+                <th class="p-3 text-center">Passed</th>
+                <th class="p-3 text-center">Not Passed</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- Operator 1 -->
+              <tr class="border-b">
+                <td class="p-3 text-center">1</td>
+                <td class="p-3 font-medium">Akun Testing Manajer</td>
+                <td class="p-3 text-center">180</td>
+                <td class="p-3 text-center text-green-600">170</td>
+                <td class="p-3 text-center text-red-600">10</td>
+              </tr>
+
+              <!-- Operator 2 -->
+              <tr class="border-b bg-red-50">
+                <td class="p-3 text-center">2</td>
+                <td class="p-3 font-medium">Akun Testing Operator</td>
+                <td class="p-3 text-center">150</td>
+                <td class="p-3 text-center text-green-600">120</td>
+                <td class="p-3 text-center text-red-600 font-semibold">30</td>
+              </tr>
+
+              <!-- Operator 3 -->
+              <tr class="border-b">
+                <td class="p-3 text-center">3</td>
+                <td class="p-3 font-medium">Coolingbed</td>
+                <td class="p-3 text-center">200</td>
+                <td class="p-3 text-center text-green-600">195</td>
+                <td class="p-3 text-center text-red-600">5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= QC CHARTS (WEEKLY & MONTHLY) ================= -->
+    <script>
+      function getLast7DaysData() {
+        const daysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const daysFull = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+          "Okt",
+          "Nov",
+          "Des",
+        ];
+
+        const labels = [];
+        const tooltipLabels = [];
+        const today = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+
+          labels.push(daysShort[d.getDay()]);
+          tooltipLabels.push(
+            `${daysFull[d.getDay()]}, ${d.getDate()} ${
+              months[d.getMonth()]
+            } ${d.getFullYear()}`
+          );
+        }
+
+        return { labels, tooltipLabels };
+      }
+    </script>
+
+    <script>
+      function getLast7DaysData() {
+        const daysShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const daysFull = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+          "Okt",
+          "Nov",
+          "Des",
+        ];
+
+        const labels = [];
+        const tooltipLabels = [];
+        const today = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          labels.push(daysShort[d.getDay()]);
+          tooltipLabels.push(
+            `${daysFull[d.getDay()]}, ${d.getDate()} ${
+              months[d.getMonth()]
+            } ${d.getFullYear()}`
+          );
+        }
+
+        return { labels, tooltipLabels };
+      }
+
+      // ================= QC WEEKLY CHART =================
+      const weekly = getLast7DaysData();
+      const totalQCWeekly = [120, 135, 110, 145, 160, 130, 150];
+      const passedWeekly = [105, 120, 98, 130, 145, 118, 135];
+      const notPassedWeekly = totalQCWeekly.map((v, i) => v - passedWeekly[i]);
+
+      const ctx = document.getElementById("qcWeeklyChart").getContext("2d");
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: weekly.labels,
+          datasets: [
+            {
+              label: "Total QC",
+              data: totalQCWeekly,
+              borderColor: "#1e40af",
+              borderWidth: 2,
+              borderDash: [6, 6],
+              pointRadius: 0,
+              tension: 0.45,
+            },
+            {
+              label: "Passed",
+              data: passedWeekly,
+              borderColor: "#16a34a",
+              backgroundColor: "rgba(22,163,74,0.08)",
+              borderWidth: 2.5,
+              pointRadius: 3,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#16a34a",
+              fill: true,
+              tension: 0.45,
+            },
+            {
+              label: "Not Passed",
+              data: notPassedWeekly,
+              borderColor: "#dc2626",
+              backgroundColor: "rgba(220,38,38,0.06)",
+              borderWidth: 2,
+              pointRadius: 3,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#dc2626",
+              fill: true,
+              tension: 0.45,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { position: "bottom" },
+            tooltip: {
+              mode: "index",
+              intersect: false,
+              callbacks: {
+                title: (tooltipItems) =>
+                  weekly.tooltipLabels[tooltipItems[0].dataIndex],
+                label: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  const label = ctx.dataset.label;
+                  const total = totalQCWeekly[idx];
+                  if (label === "Passed") {
+                    const percent = ((passedWeekly[idx] / total) * 100).toFixed(
+                      1
+                    );
+                    return `Passed: ${passedWeekly[idx]} pcs (${percent}%)`;
+                  } else if (label === "Not Passed") {
+                    const percent = (
+                      (notPassedWeekly[idx] / total) *
+                      100
+                    ).toFixed(1);
+                    return `Not Passed: ${notPassedWeekly[idx]} pcs (${percent}%)`;
+                  }
+                  return `${label}: ${ctx.raw} pcs`;
+                },
+                footer: (tooltipItems) => {
+                  const idx = tooltipItems[0].dataIndex;
+                  return `Total QC: ${totalQCWeekly[idx]} pcs`;
+                },
+              },
+            },
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { maxRotation: 0 } },
+            y: {
+              beginAtZero: true,
+              grid: { color: "#e5e7eb", drawBorder: false },
+            },
+          },
+        },
+      });
+
+      // ================= QC MONTHLY CHART =================
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Agu",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Des",
+      ];
+      const totalQCMonthly = [
+        520, 610, 580, 640, 700, 690, 720, 750, 710, 780, 820, 860,
+      ];
+      const passedMonthly = [
+        480, 560, 530, 590, 640, 630, 660, 690, 670, 720, 760, 800,
+      ];
+      const notPassedMonthly = totalQCMonthly.map(
+        (v, i) => v - passedMonthly[i]
+      );
+
+      const ctmx = document.getElementById("qcMonthlyChart").getContext("2d");
+
+      const qcMonthlyChart = new Chart(ctmx, {
+        type: "line",
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: "Total QC",
+              data: totalQCMonthly,
+              borderColor: "#1e40af",
+              borderWidth: 2,
+              borderDash: [6, 6],
+              pointRadius: 0,
+              tension: 0.45,
+            },
+            {
+              label: "Passed",
+              data: passedMonthly,
+              borderColor: "#16a34a",
+              backgroundColor: "rgba(22,163,74,0.08)",
+              borderWidth: 2.5,
+              pointRadius: 3,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#16a34a",
+              fill: true,
+              tension: 0.45,
+            },
+            {
+              label: "Not Passed",
+              data: notPassedMonthly,
+              borderColor: "#dc2626",
+              backgroundColor: "rgba(220,38,38,0.06)",
+              borderWidth: 2,
+              pointRadius: 3,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#dc2626",
+              fill: true,
+              tension: 0.45,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { position: "bottom" },
+            tooltip: {
+              backgroundColor: "#0f172a",
+              titleColor: "#e5e7eb",
+              bodyColor: "#e5e7eb",
+              padding: 12,
+              cornerRadius: 8,
+              mode: "index",
+              intersect: false,
+              callbacks: {
+                label: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  const label = ctx.dataset.label;
+                  const total = totalQCMonthly[idx];
+                  if (label === "Passed") {
+                    const percent = (
+                      (passedMonthly[idx] / total) *
+                      100
+                    ).toFixed(1);
+                    return `Passed: ${passedMonthly[idx]} pcs (${percent}%)`;
+                  } else if (label === "Not Passed") {
+                    const percent = (
+                      (notPassedMonthly[idx] / total) *
+                      100
+                    ).toFixed(1);
+                    return `Not Passed: ${notPassedMonthly[idx]} pcs (${percent}%)`;
+                  }
+                  return `${label}: ${ctx.raw} pcs`;
+                },
+                footer: (tooltipItems) => {
+                  const idx = tooltipItems[0].dataIndex;
+                  return `Total QC: ${totalQCMonthly[idx]} pcs`;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: "#64748b", font: { size: 11 } },
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: "#e5e7eb", drawBorder: false },
+              ticks: { color: "#64748b", font: { size: 11 } },
+            },
+          },
+        },
+      });
+
+      // ================= FILTER BULAN =================
+      document
+        .getElementById("monthFilter")
+        .addEventListener("change", function () {
+          const val = this.value;
+          if (val === "all") {
+            qcMonthlyChart.data.labels = months;
+            qcMonthlyChart.data.datasets[0].data = totalQCMonthly;
+            qcMonthlyChart.data.datasets[1].data = passedMonthly;
+            qcMonthlyChart.data.datasets[2].data = notPassedMonthly;
+          } else {
+            const monthIndex = parseInt(val) - 1;
+            qcMonthlyChart.data.labels = [months[monthIndex]];
+            qcMonthlyChart.data.datasets[0].data = [totalQCMonthly[monthIndex]];
+            qcMonthlyChart.data.datasets[1].data = [passedMonthly[monthIndex]];
+            qcMonthlyChart.data.datasets[2].data = [
+              notPassedMonthly[monthIndex],
+            ];
+          }
+          qcMonthlyChart.update();
+        });
+    </script>
+
+    <!-- ================= END QC CHARTS (WEEKLY & MONTHLY) ================= -->
+
+    <!-- ================= QC RESULT BY SIZE ================= -->
+    <script>
+      // ================= MASTER DATA (SIMULASI 50 SIZE) =================
+      const allSizes = Array.from({ length: 50 }, (_, i) => ({
+        size: `HB ${100 + i}×${100 + i}×6×8`,
+        passed: Math.floor(Math.random() * 150) + 50,
+        notPassed: Math.floor(Math.random() * 60) + 10,
+      }));
+
+      // ================= INIT SIZE DROPDOWN =================
+      const sizeSelect = document.getElementById("sizeFilter");
+      allSizes.forEach((s) => {
+        const opt = document.createElement("option");
+        opt.value = s.size;
+        opt.textContent = s.size;
+        sizeSelect.appendChild(opt);
+      });
+
+      let qcChart;
+
+      function renderChart(data) {
+        const labels = data.map((d) => d.size);
+        const passedPercent = data.map((d) =>
+          ((d.passed / (d.passed + d.notPassed)) * 100).toFixed(1)
+        );
+        const notPassedPercent = data.map((d) =>
+          ((d.notPassed / (d.passed + d.notPassed)) * 100).toFixed(1)
+        );
+
+        if (qcChart) qcChart.destroy();
+
+        qcChart = new Chart(document.getElementById("qcSizePercentChart"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Passed (%)",
+                data: passedPercent,
+                backgroundColor: "#16a34a",
+                stack: "percent",
+                borderRadius: 6,
+              },
+              {
+                label: "Not Passed (%)",
+                data: notPassedPercent,
+                backgroundColor: "#dc2626",
+                stack: "percent",
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: true,
+                max: 100,
+                ticks: {
+                  callback: (v) => v + "%",
+                },
+              },
+              y: {
+                stacked: true,
+                ticks: {
+                  autoSkip: false,
+                  font: { size: 11 },
+                },
+              },
+            },
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // ================= APPLY FILTER =================
+      document.getElementById("applyFilter").addEventListener("click", () => {
+        const selectedSize = sizeSelect.value;
+
+        let filtered = allSizes;
+        if (selectedSize) {
+          filtered = allSizes.filter((d) => d.size === selectedSize);
+        }
+
+        renderChart(filtered.slice(0, 5)); // default max 5 biar kebaca
+      });
+
+      // ================= INIT =================
+      renderChart(allSizes.slice(0, 5));
+    </script>
+    <!-- ================= END QC RESULT BY SIZE ================= -->
+  </body>
+</html>
