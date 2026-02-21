@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QC Dashboard</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-7xl mx-auto">
+      <!-- SIZE + PARAMETER (PASSED VS NOT PASSED) -->
+      <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4"
+        >
+          <div>
+            <h2 class="text-lg font-semibold">QC Dashboard Analysis</h2>
+            <p class="text-sm text-gray-500">Passed vs Not Passed</p>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <!-- Product Filter -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">Product</label>
+            <select
+              id="productFilter"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            >
+              <option value="">All Product</option>
+              <option value="HB">H-BEAM</option>
+              <option value="WF">WF-BEAM</option>
+            </select>
+          </div>
+
+          <!-- Size -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">Size</label>
+            <select
+              id="sizeFilter"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            >
+              <option value="">All Size</option>
+            </select>
+          </div>
+
+          <!-- From Date -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">From Date</label>
+            <input
+              type="date"
+              id="fromDate"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            />
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label class="text-sm font-medium text-gray-600">End Date</label>
+            <input
+              type="date"
+              id="endDate"
+              class="w-full mt-1 border rounded-lg p-2 text-sm"
+            />
+          </div>
+
+          <!-- Button -->
+          <div class="flex items-end">
+            <button
+              id="applyFilter"
+              class="w-full bg-blue-600 text-white rounded-lg p-2 text-sm hover:bg-blue-700"
+            >
+              Apply Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- Resume QC -->
+        <div>
+          <h3 class="font-semibold mb-4 text-lg">Resume QC</h3>
+          <div
+            class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+          >
+            <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+            <code class="block bg-gray-100 text-gray-800 p-2 rounded font-mono">
+              GET /dashboard/summary/recent-qc
+            </code>
+          </div>
+          <div class="grid md:grid-cols-4 gap-4 mb-6">
+            <!-- TOTAL CHECK -->
+            <div class="bg-white shadow rounded-xl p-4">
+              <p class="text-sm text-gray-500">Total QC</p>
+              <h2 class="text-2xl font-bold text-gray-800">400</h2>
+            </div>
+
+            <!-- PASSED -->
+            <div class="bg-green-50 shadow rounded-xl p-4">
+              <p class="text-sm text-green-600">Passed</p>
+              <h2 class="text-2xl font-bold text-green-700">200</h2>
+              <p class="text-xs text-green-600">50%</p>
+            </div>
+
+            <!-- NOT PASSED -->
+            <div class="bg-red-50 shadow rounded-xl p-4">
+              <p class="text-sm text-red-600">Not Passed</p>
+              <h2 class="text-2xl font-bold text-red-700">200</h2>
+              <p class="text-xs text-red-600">50%</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= DYNAMIC LAYOUT CONTAINER ================= -->
+        <div id="dynamicLayout">
+          <!-- Default: Full width QC Size Chart -->
+          <div id="qcSizeFullContainer" class="w-full">
+            <div class="bg-white p-6 rounded-2xl shadow">
+              <h3 class="font-semibold mb-4 text-lg">
+                QC by Size (Passed vs Not Passed)
+              </h3>
+              <div
+                class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+              >
+                <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+                <code
+                  class="block bg-gray-100 text-gray-800 p-2 rounded font-mono"
+                >
+                  GET /dashboard/by-size
+                </code>
+              </div>
+              <div class="relative h-[420px]">
+                <canvas id="qcSizePercentChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden by default: Split layout container -->
+          <div id="splitLayoutContainer" class="hidden">
+            <!-- 2 Column Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 mb-6 gap-4">
+              <!-- QC SIZE CHART (kiri) -->
+              <div class="bg-white p-6 rounded-2xl shadow">
+                <h3 class="font-semibold mb-4 text-lg">
+                  QC by Size (Passed vs Not Passed)
+                </h3>
+                <div
+                  class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+                >
+                  <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+                  <code
+                    class="block bg-gray-100 text-gray-800 p-2 rounded font-mono"
+                  >
+                    GET /dashboard/by-size
+                  </code>
+                </div>
+                <div class="relative h-[420px]">
+                  <canvas id="qcSizePercentChartSplit"></canvas>
+                </div>
+              </div>
+
+              <!-- BAR CHART (kanan) -->
+              <div class="bg-white p-6 rounded-2xl shadow">
+                <h3 class="font-semibold mb-4 text-lg">
+                  Dimensi QC (Passed vs Not Passed)
+                </h3>
+                <div
+                  class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+                >
+                  <p class="text-sm text-gray-600 leading-relaxed">
+                    <span class="font-bold text-black">Note:</span> untuk
+                    mendapatkan data yang lebih akurat, kirim parameter
+                    <span class="font-medium text-gray-800">prodtype_id</span>
+                    dan
+                    <span class="font-medium text-gray-800">size</span>
+                    pada request.
+                  </p>
+                  <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+                  <code
+                    class="block bg-gray-100 text-gray-800 p-2 rounded font-mono"
+                  >
+                    GET /dashboard/by-dimensions
+                  </code>
+                </div>
+
+                <div class="relative h-[420px]">
+                  <canvas id="barChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Summary Card Dimension -->
+            <div>
+              <h3 class="font-semibold mb-4 text-lg">
+                Dimensi QC (Passed vs Not Passed)
+              </h3>
+              <div
+                class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+              >
+                <p class="text-sm text-gray-600 leading-relaxed">
+                  <span class="font-bold text-black">Note:</span> untuk
+                  mendapatkan data yang lebih akurat, kirim parameter
+                  <span class="font-medium text-gray-800">prodtype_id</span>
+                  dan
+                  <span class="font-medium text-gray-800">size</span>
+                  pada request.
+                </p>
+                <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+                <code
+                  class="block bg-gray-100 text-gray-800 p-2 rounded font-mono"
+                >
+                  GET /dashboard/by-dimensions
+                </code>
+              </div>
+              <div id="dimensionCards" class="grid md:grid-cols-3 gap-4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL DETAIL -->
+        <div
+          id="detailModal"
+          class="fixed inset-0 bg-black/40 hidden items-center justify-center"
+        >
+          <div class="bg-white rounded-xl p-5 w-[420px] shadow-lg">
+            <div
+              class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 max-w-md"
+            >
+              <p class="text-sm text-gray-600 leading-relaxed">
+                <span class="font-bold text-black">Note:</span> untuk
+                mendapatkan data yang lebih akurat, kirim parameter
+                <span class="font-medium text-gray-800">prodtype_id</span>
+                dan
+                <span class="font-medium text-gray-800">size</span>
+                pada request.
+              </p>
+              <p class="text-gray-500 mb-2">Gunakan endpoint berikut:</p>
+              <code
+                class="block bg-gray-100 text-gray-800 p-2 rounded font-mono"
+              >
+                GET /dashboard/by-dimensions/detail
+              </code>
+            </div>
+
+            <h2 id="detailTitle" class="font-bold mb-3"></h2>
+
+            <canvas id="toleranceChart" height="200"></canvas>
+
+            <button
+              onclick="closeDetail()"
+              class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ================= MASTER DATA SIZE =================
+      const allSizes = Array.from({ length: 50 }, (_, i) => ({
+        size: `HB ${100 + i}×${100 + i}×6×8`,
+        passed: Math.floor(Math.random() * 150) + 50,
+        notPassed: Math.floor(Math.random() * 60) + 10,
+      })).concat(
+        Array.from({ length: 50 }, (_, i) => ({
+          size: `WF ${120 + i}×${120 + i}×8×10`,
+          passed: Math.floor(Math.random() * 150) + 50,
+          notPassed: Math.floor(Math.random() * 60) + 10,
+        })),
+      );
+
+      const sizeSelect = document.getElementById("sizeFilter");
+      const productSelect = document.getElementById("productFilter");
+
+      // Layout containers
+      const qcSizeFullContainer = document.getElementById(
+        "qcSizeFullContainer",
+      );
+      const splitLayoutContainer = document.getElementById(
+        "splitLayoutContainer",
+      );
+
+      // Chart instances
+      let qcChart, qcChartSplit, barChart;
+
+      // ================= POPULATE SIZE DROPDOWN BERDASARKAN PRODUCT =================
+      function populateSizeDropdown(productPrefix = "") {
+        sizeSelect.innerHTML = '<option value="">All Size</option>';
+        let filteredSizes = allSizes;
+        if (productPrefix) {
+          filteredSizes = allSizes.filter((s) =>
+            s.size.startsWith(productPrefix),
+          );
+        }
+        // Get unique sizes
+        const uniqueSizes = [...new Set(filteredSizes.map((s) => s.size))];
+        uniqueSizes.forEach((size) => {
+          const opt = document.createElement("option");
+          opt.value = size;
+          opt.textContent = size;
+          sizeSelect.appendChild(opt);
+        });
+      }
+
+      productSelect.addEventListener("change", () => {
+        populateSizeDropdown(productSelect.value);
+      });
+
+      // ================= RENDER SIZE CHARTS =================
+      function renderCharts(data) {
+        const labels = data.map((d) => d.size);
+        const passedPercent = data.map((d) =>
+          ((d.passed / (d.passed + d.notPassed)) * 100).toFixed(1),
+        );
+        const notPassedPercent = data.map((d) =>
+          ((d.notPassed / (d.passed + d.notPassed)) * 100).toFixed(1),
+        );
+
+        // Destroy existing charts
+        if (qcChart) qcChart.destroy();
+        if (qcChartSplit) qcChartSplit.destroy();
+
+        // Chart for full layout
+        qcChart = new Chart(document.getElementById("qcSizePercentChart"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Passed (%)",
+                data: passedPercent,
+                backgroundColor: "#16a34a",
+                stack: "percent",
+                borderRadius: 6,
+              },
+              {
+                label: "Not Passed (%)",
+                data: notPassedPercent,
+                backgroundColor: "#dc2626",
+                stack: "percent",
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                stacked: true,
+                max: 100,
+                ticks: { callback: (v) => v + "%" },
+              },
+              y: {
+                stacked: true,
+                ticks: { autoSkip: false, font: { size: 11 } },
+              },
+            },
+            plugins: {
+              legend: { position: "bottom" },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => {
+                    const d = data[ctx.dataIndex];
+                    const total = d.passed + d.notPassed;
+                    return `${ctx.dataset.label}: ${ctx.raw}% (Total QC: ${total}, Passed: ${d.passed}, Not Passed: ${d.notPassed})`;
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Chart for split layout
+        qcChartSplit = new Chart(
+          document.getElementById("qcSizePercentChartSplit"),
+          {
+            type: "bar",
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: "Passed (%)",
+                  data: passedPercent,
+                  backgroundColor: "#16a34a",
+                  stack: "percent",
+                  borderRadius: 6,
+                },
+                {
+                  label: "Not Passed (%)",
+                  data: notPassedPercent,
+                  backgroundColor: "#dc2626",
+                  stack: "percent",
+                  borderRadius: 6,
+                },
+              ],
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  stacked: true,
+                  max: 100,
+                  ticks: { callback: (v) => v + "%" },
+                },
+                y: {
+                  stacked: true,
+                  ticks: { autoSkip: false, font: { size: 11 } },
+                },
+              },
+              plugins: {
+                legend: { position: "bottom" },
+                tooltip: {
+                  callbacks: {
+                    label: (ctx) => {
+                      const d = data[ctx.dataIndex];
+                      const total = d.passed + d.notPassed;
+                      return `${ctx.dataset.label}: ${ctx.raw}% (Total QC: ${total}, Passed: ${d.passed}, Not Passed: ${d.notPassed})`;
+                    },
+                  },
+                },
+              },
+            },
+          },
+        );
+      }
+
+      // ================= FETCH PARAMETER DATA =================
+      function fetchFailData() {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve([
+              {
+                dimensi: "B1 - Tinggi Flange Kiri",
+                passed: 23,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 92,
+                percentNotPassed: 8,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "b1-b2/2 - Simetri Kanan",
+                passed: 24,
+                notPassed: 1,
+                totalCheck: 25,
+                percentPassed: 96,
+                percentNotPassed: 4,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "B2 - Tinggi Flange Kanan",
+                passed: 25,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 100,
+                percentNotPassed: 0,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "b3-b4/2 - Simetri Kiri",
+                passed: 24,
+                notPassed: 1,
+                totalCheck: 25,
+                percentPassed: 96,
+                percentNotPassed: 4,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "H-Bottom - Lebar Web Bawah",
+                passed: 25,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 100,
+                percentNotPassed: 0,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "H-Top - Lebar Web Atas",
+                passed: 23,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 92,
+                percentNotPassed: 8,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t1 - Tebal Flange Kiri Atas",
+                passed: 23,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 92,
+                percentNotPassed: 8,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t2 - Tebal Flange Kiri Bawah",
+                passed: 24,
+                notPassed: 1,
+                totalCheck: 25,
+                percentPassed: 96,
+                percentNotPassed: 4,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t3 - Tebal Flange Kanan Atas",
+                passed: 23,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 92,
+                percentNotPassed: 8,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t4 - Tebal Flange Kanan Bawah",
+                passed: 24,
+                notPassed: 1,
+                totalCheck: 25,
+                percentPassed: 96,
+                percentNotPassed: 4,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t5 - Tebal Web",
+                passed: 22,
+                notPassed: 3,
+                totalCheck: 25,
+                percentPassed: 88,
+                percentNotPassed: 12,
+                notChecked: 0,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t6 - Tebal Web",
+                passed: 10,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 83,
+                percentNotPassed: 17,
+                notChecked: 13,
+                isTolerance: true,
+              },
+              {
+                dimensi: "t7 - Tebal Web",
+                passed: 10,
+                notPassed: 2,
+                totalCheck: 25,
+                percentPassed: 83,
+                percentNotPassed: 17,
+                notChecked: 13,
+                isTolerance: true,
+              },
+              {
+                dimensi: "b1",
+                passed: 0,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 0,
+                percentNotPassed: 0,
+                notChecked: 25,
+                isTolerance: false,
+              },
+              {
+                dimensi: "b2",
+                passed: 0,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 0,
+                percentNotPassed: 0,
+                notChecked: 25,
+                isTolerance: false,
+              },
+              {
+                dimensi: "b3",
+                passed: 0,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 0,
+                percentNotPassed: 0,
+                notChecked: 25,
+                isTolerance: false,
+              },
+              {
+                dimensi: "b4",
+                passed: 0,
+                notPassed: 0,
+                totalCheck: 25,
+                percentPassed: 0,
+                percentNotPassed: 0,
+                notChecked: 25,
+                isTolerance: false,
+              },
+            ]);
+          }, 500);
+        });
+      }
+
+      function fetchDetailData() {
+        return Promise.resolve([
+          {
+            qc_id: "08B2604DC",
+            piece_no: "pH",
+            input_value: 250,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 1,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:24:48.555Z",
+          },
+          {
+            qc_id: "08B2604DD",
+            piece_no: "p1",
+            input_value: 251,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 2,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:26:10.120Z",
+          },
+          {
+            qc_id: "08B2604DE",
+            piece_no: "p2",
+            input_value: 252,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 3,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:27:32.442Z",
+          },
+          {
+            qc_id: "08B2604DF",
+            piece_no: "p3",
+            input_value: 254,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 4,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Out of Tolerance",
+            checked_at: "2026-02-19T09:29:05.002Z",
+          },
+          {
+            qc_id: "08B2604DG",
+            piece_no: "p4",
+            input_value: 249,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 5,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:30:41.331Z",
+          },
+          {
+            qc_id: "08B2604DH",
+            piece_no: "p5",
+            input_value: 246,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 6,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Out of Tolerance",
+            checked_at: "2026-02-19T09:32:12.918Z",
+          },
+          {
+            qc_id: "08B2604DI",
+            piece_no: "p6",
+            input_value: 248,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 7,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:34:22.771Z",
+          },
+          {
+            qc_id: "08B2604DJ",
+            piece_no: "p7",
+            input_value: 250,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 8,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:36:55.223Z",
+          },
+          {
+            qc_id: "08B2604DK",
+            piece_no: "pT",
+            input_value: 250,
+            tolerance_min: 247,
+            tolerance_max: 253,
+            sequence_no: 9,
+            alias: "B2 - Tinggi Flange Kanan",
+            status: "Passed",
+            checked_at: "2026-02-19T09:38:14.007Z",
+          },
+        ]);
+      }
+
+      function renderParameterChart(productData) {
+        const labels = productData.map((d) => d.dimensi);
+
+        if (barChart) barChart.destroy();
+
+        barChart = new Chart(document.getElementById("barChart"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Passed",
+                data: productData.map((d) => d.passed),
+                backgroundColor: productData.map((d) =>
+                  d.isTolerance ? "#16a34a" : "#86efac",
+                ),
+                borderRadius: 6,
+              },
+              {
+                label: "Not Passed",
+                data: productData.map((d) => d.notPassed),
+                backgroundColor: productData.map((d) =>
+                  d.isTolerance ? "#dc2626" : "#fca5a5",
+                ),
+                borderRadius: 6,
+              },
+              {
+                label: "Not Checked",
+                data: productData.map((d) => d.notChecked),
+                backgroundColor: "#9ca3af",
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: "index",
+              intersect: false,
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                stacked: true,
+              },
+              x: {
+                stacked: true,
+              },
+            },
+            plugins: {
+              legend: { position: "bottom" },
+              tooltip: {
+                mode: "index",
+                intersect: false,
+                callbacks: {
+                  title: (items) => {
+                    const d = productData[items[0].dataIndex];
+                    return d.isTolerance
+                      ? d.dimensi
+                      : `${d.dimensi} (Tidak ditoleransi)`;
+                  },
+                  label: (ctx) => {
+                    const d = productData[ctx.dataIndex];
+                    if (ctx.dataset.label === "Passed") {
+                      return `✔ Passed: ${d.passed} (${d.percentPassed}%)`;
+                    }
+                    if (ctx.dataset.label === "Not Passed") {
+                      return `✖ Not Passed: ${d.notPassed} (${d.percentNotPassed}%)`;
+                    }
+                    if (ctx.dataset.label === "Not Checked") {
+                      const percentNotChecked =
+                        d.totalCheck + d.notChecked === 0
+                          ? 0
+                          : Math.round(
+                              (d.notChecked / (d.totalCheck + d.notChecked)) *
+                                100,
+                            );
+                      return `◻ Not Checked: ${d.notChecked} (${percentNotChecked}%)`;
+                    }
+                  },
+                  afterBody: (items) => {
+                    const d = productData[items[0].dataIndex];
+                    return `Total Check: ${d.totalCheck}`;
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // ================= UPDATE LAYOUT BASED ON FILTER =================
+      function updateLayout() {
+        const selectedProduct = productSelect.value;
+        const selectedSize = sizeSelect.value;
+
+        // Filter data for charts
+        let filtered = allSizes;
+        if (selectedProduct)
+          filtered = filtered.filter((d) => d.size.startsWith(selectedProduct));
+        if (selectedSize)
+          filtered = filtered.filter((d) => d.size === selectedSize);
+
+        // Update charts with filtered data (limit to first 5 for better view)
+        renderCharts(filtered.slice(0, 5));
+
+        // Check if both product and size are selected (not empty)
+        const isDetailedView = selectedProduct !== "" && selectedSize !== "";
+
+        if (isDetailedView) {
+          // Show split layout, hide full layout
+          qcSizeFullContainer.classList.add("hidden");
+          splitLayoutContainer.classList.remove("hidden");
+
+          // Load dimension data
+          fetchFailData().then((data) => {
+            renderParameterChart(data);
+            loadCards(data);
+          });
+        } else {
+          // Show full layout, hide split layout
+          qcSizeFullContainer.classList.remove("hidden");
+          splitLayoutContainer.classList.add("hidden");
+        }
+      }
+
+      // ================= APPLY FILTER =================
+      document.getElementById("applyFilter").addEventListener("click", () => {
+        updateLayout();
+      });
+
+      const container = document.getElementById("dimensionCards");
+
+      function getColor(item) {
+        if (!item.isTolerance || item.totalCheck === 0) return "bg-gray-400";
+        if (item.percentPassed > 70) return "bg-green-500";
+        if (item.percentPassed >= 50) return "bg-yellow-500";
+        return "bg-red-500";
+      }
+
+      function createCard(item) {
+        const color = getColor(item);
+
+        return `
+        <div onclick='showDetail(${JSON.stringify(item).replace(/'/g, "&apos;")})'
+            class="bg-white rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm p-5 cursor-pointer transition">
+
+          <!-- Title -->
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-sm font-semibold text-gray-800">
+              ${item.dimensi}
+            </h3>
+            <span class="w-2.5 h-2.5 rounded-full ${color}"></span>
+          </div>
+
+          <!-- Stats -->
+          <div class="space-y-1 text-sm">
+            <div class="flex justify-between text-gray-500">
+              <span>Total</span>
+              <span class="font-medium text-gray-700">${item.totalCheck}</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-gray-500">Passed</span>
+              <span class="font-medium text-green-600">${item.passed}</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-gray-500">Not Passed</span>
+              <span class="font-medium text-red-500">${item.notPassed}</span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-gray-500">Unchecked</span>
+              <span class="font-medium text-gray-400">${item.notChecked}</span>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div class="mt-4">
+            <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+              <div class="${color} h-full"
+                  style="width:${item.percentPassed}%"></div>
+            </div>
+
+            <div class="text-right text-xs text-gray-500 mt-1">
+              ${item.percentPassed}% pass rate
+            </div>
+          </div>
+
+        </div>
+      `;
+      }
+
+      function loadCards(data) {
+        container.innerHTML = data.map(createCard).join("");
+      }
+
+      let chartInstance = null;
+
+      window.showDetail = async function (item) {
+        document.getElementById("detailTitle").innerText = item.dimensi;
+
+        const modal = document.getElementById("detailModal");
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+
+        const data = await fetchDetailData();
+
+        const labels = data.map((d) => `#${d.sequence_no}`);
+
+        const actual = data.map((d) => d.input_value);
+        const tolMin = data.map((d) => d.tolerance_min);
+        const tolMax = data.map((d) => d.tolerance_max);
+
+        const ctx = document.getElementById("toleranceChart").getContext("2d");
+
+        if (chartInstance) chartInstance.destroy();
+
+        chartInstance = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: "Max Tolerance",
+                data: tolMax,
+                borderWidth: 1,
+                pointRadius: 0,
+                borderColor: "#16a34a",
+              },
+              {
+                label: "Min Tolerance",
+                data: tolMin,
+                borderWidth: 1,
+                pointRadius: 0,
+                borderColor: "#16a34a",
+                backgroundColor: "rgba(34,197,94,0.25)",
+                fill: { target: "-1" },
+              },
+              {
+                label: "Input",
+                data: actual,
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 6,
+                borderColor: "#2563eb",
+                pointBackgroundColor: actual.map((v, i) =>
+                  v < tolMin[i] || v > tolMax[i] ? "red" : "#16a34a",
+                ),
+              },
+            ],
+          },
+
+          options: {
+            responsive: true,
+            interaction: {
+              mode: "nearest",
+              intersect: false,
+            },
+
+            plugins: {
+              legend: { position: "bottom" },
+
+              tooltip: {
+                callbacks: {
+                  title: (tooltipItems) => {
+                    const i = tooltipItems[0].dataIndex;
+                    return `Sequence #${data[i].sequence_no}`;
+                  },
+
+                  label: (context) => {
+                    const i = context.dataIndex;
+                    const d = data[i];
+
+                    return [
+                      `Batch ID : ${d.qc_id}`,
+                      `No Sequence : ${d.sequence_no}`,
+                      `Actual : ${d.input_value}`,
+                      `Max Tolerance : ${d.tolerance_max}`,
+                      `Min Tolerance : ${d.tolerance_min}`,
+                      `Status : ${d.status}`,
+                      `Piece : ${d.piece_no}`,
+                    ];
+                  },
+
+                  afterLabel: (context) => {
+                    const i = context.dataIndex;
+                    const d = data[i];
+
+                    const date = new Date(d.checked_at).toLocaleString(
+                      "id-ID",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      },
+                    );
+
+                    return `Checked : ${date}`;
+                  },
+                },
+              },
+            },
+
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: "Sequence Order",
+                },
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "Measurement Value",
+                },
+                beginAtZero: false,
+              },
+            },
+          },
+        });
+      };
+
+      window.closeDetail = function () {
+        document.getElementById("detailModal").classList.add("hidden");
+      };
+
+      // ================= INIT =================
+      // Panggil populateSizeDropdown untuk mengisi dropdown size
+      populateSizeDropdown();
+
+      // Render chart default dengan semua data (all sizes)
+      // Perbaikan: ganti allSlices menjadi allSizes
+      renderCharts(allSizes.slice(0, 5));
+    </script>
+  </body>
+</html>
